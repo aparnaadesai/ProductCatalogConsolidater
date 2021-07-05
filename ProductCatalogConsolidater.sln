@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalogConsolidater", "ProductCatalogConsolidater\ProductCatalogConsolidater.csproj", "{9B8D4185-F81A-428F-B329-5CCED0F2767C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalogConsolidaterTests", "ProductCatalogConsolidaterTests\ProductCatalogConsolidaterTests.csproj", "{8F56994E-6560-47DF-894B-B18E00DD7355}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B8D4185-F81A-428F-B329-5CCED0F2767C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B8D4185-F81A-428F-B329-5CCED0F2767C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B8D4185-F81A-428F-B329-5CCED0F2767C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B8D4185-F81A-428F-B329-5CCED0F2767C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F56994E-6560-47DF-894B-B18E00DD7355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F56994E-6560-47DF-894B-B18E00DD7355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F56994E-6560-47DF-894B-B18E00DD7355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F56994E-6560-47DF-894B-B18E00DD7355}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC6725C7-F9E2-4B69-9189-027FE4B8FA98}
+	EndGlobalSection
+EndGlobal
