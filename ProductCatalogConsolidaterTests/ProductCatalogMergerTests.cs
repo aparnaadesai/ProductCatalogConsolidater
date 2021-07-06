@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Moq;
 using ProductCatalogConsolidater;
+using ProductCatalogConsolidater.Domain;
 using Xunit;
 
 namespace ProductCatalogConsolidaterTests
@@ -10,16 +11,13 @@ namespace ProductCatalogConsolidaterTests
         [Fact]
         public void ProductCatalogMergerTests_MergeProductCatalogs_Returns_Merged_Products()
         {
-            CSVReader reader = new CSVReader();
-            
+            CSVInputService reader = new CSVInputService();
             Mock<IConfigurationRoot> configurationRoot = new Mock<IConfigurationRoot>();
             configurationRoot.SetupGet(x => x["barcodesA"]).Returns("barcodesA.csv");
+            CSVOutputService writer = new CSVOutputService(configurationRoot.Object);
+            ProductCatalogMerger productCatalog = new ProductCatalogMerger();
+            ProductCatlalogMergerService productCatalogMerger = new ProductCatlalogMergerService(reader, writer, configurationRoot.Object, productCatalog);
 
-            CSVWriter writer = new CSVWriter(configurationRoot.Object);
-
-            ProductCatlalogMerger productCatalogMerger = new ProductCatlalogMerger(reader, writer, configurationRoot.Object);
-
-            
             productCatalogMerger.MergeProductCatalogs();
         }
     }

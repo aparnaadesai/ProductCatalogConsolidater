@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProductCatalogConsolidater.Domain;
 using System;
 using System.IO;
 
@@ -16,7 +17,7 @@ namespace ProductCatalogConsolidater
             IServiceScope scope = _serviceProvider.CreateScope();
             scope.
                 ServiceProvider.
-                GetRequiredService<ConsoleApplication>().
+                GetRequiredService<ProductCatalogConsolidater>().
                 Run();
 
             DisposeServices();
@@ -25,10 +26,11 @@ namespace ProductCatalogConsolidater
         private static void RegisterServices()
         {
             var services = new ServiceCollection();
-            services.AddScoped<ConsoleApplication>();
-            services.AddScoped<IInputService, CSVReader>();
-            services.AddScoped<IOutputService, CSVWriter>();
-            services.AddScoped<IProductCatalogMerger, ProductCatlalogMerger>();
+            services.AddScoped<ProductCatalogConsolidater>();
+            services.AddScoped<IInputService, CSVInputService>();
+            services.AddScoped<IOutputService, CSVOutputService>();
+            services.AddScoped<IProductCatalogMergerService, ProductCatlalogMergerService>();
+            services.AddScoped<IProductCatalogMerger, ProductCatalogMerger>();
 
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)

@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace ProductCatalogConsolidater
 {
-    public class CSVReader : IInputService
+    public class CSVInputService : IInputService
     {
-        List<Catalog> IInputService.GetProductsFromCatalog(string fileName, string catalogType)
+        public List<Product> GetProductsFromCatalog(string fileName, string catalogType)
         {
-            List<Catalog> catalogs = new List<Catalog>();
+            List<Product> products = new List<Product>();
 
             List<string[]> results = ReadCSV(fileName);
 
@@ -18,28 +18,28 @@ namespace ProductCatalogConsolidater
 
             foreach (var item in results)
             {
-                Catalog catalog = new Catalog();
-                catalog.CatalogType = catalogType;
+                Product product = new Product();
+                product.CatalogType = catalogType;
 
                 for (int i = 0; i < columnCount; i++)
                 {
                     if(i == 0)
                     {
-                        catalog.SKU = item.ElementAt(i);
+                        product.SKU = item.ElementAt(i);
                     }
                     else
                     {
-                        catalog.Description = item.ElementAt(i);
+                        product.Description = item.ElementAt(i);
                     }
                 }
 
-                catalogs.Add(catalog);
+                products.Add(product);
             }
 
-            return catalogs;
+            return products;
         }
 
-        public List<SupplierProductBarcode> ReadSupplierProductBarcode(string fileName)
+        public List<SupplierProductBarcode> GetSupplierProductBarcodes(string fileName)
         {
             List<SupplierProductBarcode> supplierProductBarcodes =
                 new List<SupplierProductBarcode>();
@@ -72,9 +72,9 @@ namespace ProductCatalogConsolidater
             return supplierProductBarcodes;
         }
 
-        public List<Suppliers> ReadSuppliers(string fileName)
+        public List<Supplier> GetSuppliers(string fileName)
         {
-            List<Suppliers> suppliers = new List<Suppliers>();
+            List<Supplier> suppliers = new List<Supplier>();
 
             List<string[]> results = ReadCSV(fileName);
 
@@ -82,7 +82,7 @@ namespace ProductCatalogConsolidater
 
             foreach (var item in results)
             {
-                Suppliers supplier = new Suppliers();
+                Supplier supplier = new Supplier();
 
                 for (int i = 0; i < columnCount; i++)
                 {

@@ -1,10 +1,10 @@
 ﻿namespace ProductCatalogConsolidater
 {
-    internal class ConsoleApplication
+    internal class ProductCatalogConsolidater
     {
-        private readonly IProductCatalogMerger _productCatalogMerger;
+        private readonly IProductCatalogMergerService _productCatalogMerger;
 
-        public ConsoleApplication(IProductCatalogMerger productCatalogMerger)
+        public ProductCatalogConsolidater(IProductCatalogMergerService productCatalogMerger)
         {
             _productCatalogMerger = productCatalogMerger;
         }

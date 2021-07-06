@@ -1,6 +1,6 @@
 ﻿namespace ProductCatalogConsolidater
 {
-    public class Catalog
+    public class Product
     {
         public string SKU { get; set; }
         public string Description { get; set; }

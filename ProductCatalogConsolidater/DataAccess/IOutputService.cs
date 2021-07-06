@@ -4,6 +4,6 @@ namespace ProductCatalogConsolidater
 {
     public interface IOutputService
     {
-        void WriteToFile(IEnumerable<FinalProductCatalog> mergedCatalog);
+        void Write(IEnumerable<FinalProductCatalog> mergedCatalog);
     }
 }

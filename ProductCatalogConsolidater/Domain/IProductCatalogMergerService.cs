@@ -1,6 +1,6 @@
 ﻿namespace ProductCatalogConsolidater
 {
-    interface IProductCatalogMerger
+    interface IProductCatalogMergerService
     {
         void MergeProductCatalogs();
     }

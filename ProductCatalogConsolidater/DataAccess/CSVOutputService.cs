@@ -4,16 +4,16 @@ using System.IO;
 
 namespace ProductCatalogConsolidater
 {
-    public class CSVWriter : IOutputService
+    public class CSVOutputService : IOutputService
     {
         private readonly IConfigurationRoot _configurationRoot;
 
-        public CSVWriter(IConfigurationRoot configurationRoot)
+        public CSVOutputService(IConfigurationRoot configurationRoot)
         {
             _configurationRoot = configurationRoot;
         }
 
-        public void WriteToFile(IEnumerable<FinalProductCatalog> mergedCatalog)
+        public void Write(IEnumerable<FinalProductCatalog> mergedCatalog)
         {
             var directoryPath = _configurationRoot.GetSection("Output:outputDirectory").Value;
             var filePath = $"{directoryPath}/{_configurationRoot.GetSection("Output:outputFile").Value}";

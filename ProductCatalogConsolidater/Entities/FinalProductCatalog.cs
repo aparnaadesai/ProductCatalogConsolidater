@@ -8,7 +8,7 @@
 
         public override string ToString()
         {
-            return $"{SKU},{Description},{Source}";
+            return $"{SKU}, {Description}, {Source}";
         }
     }
 }
