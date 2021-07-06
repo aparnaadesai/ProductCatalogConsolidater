@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using ProductCatalogConsolidater.Domain;
+using ProductCatalogConsolidater.Entities;
+using System.Collections.Generic;
 
 namespace ProductCatalogConsolidater
 {
@@ -10,6 +12,11 @@ namespace ProductCatalogConsolidater
         private readonly IConfigurationRoot _configurationRoot;
         private readonly IProductCatalogMerger _productCatalogMerger;
 
+        private List<SupplierProductBarcodes> _productBarcodes = new List<SupplierProductBarcodes>();
+        private List<List<SupplierProductBarcode>> _productBarcodeList = new List<List<SupplierProductBarcode>>();
+        private List<Catalog> _catalogs = new List<Catalog>();
+        private List<List<Product>> _productSets = new List<List<Product>>();
+
         public ProductCatlalogMergerService(IInputService reader,
             IOutputService writer,
             IConfigurationRoot configurationRoot,
@@ -19,23 +26,26 @@ namespace ProductCatalogConsolidater
             _writer = writer;
             _configurationRoot = configurationRoot;
             _productCatalogMerger = productCatalogMerger;
+            _configurationRoot.GetSection("supplierProductBarcodes").Bind(_productBarcodes);
+            _configurationRoot.GetSection("productCatalogs").Bind(_catalogs);
         }
 
         public void MergeProductCatalogs()
         {
-
-            var barcodeAPath = _configurationRoot.GetSection("Input:barcodesA").Value;
-            var barcodeBPath = _configurationRoot.GetSection("Input:barcodesB").Value;
             var catalogAPath = _configurationRoot.GetSection("Input:catalogA").Value;
             var catalogBPath = _configurationRoot.GetSection("Input:catalogB").Value;
 
-            var barcodesA = _reader.GetSupplierProductBarcodes(barcodeAPath);
-            var barcodesB = _reader.GetSupplierProductBarcodes(barcodeBPath);
+            foreach (var barcodeDataSet in _productBarcodes)
+            {
+                _productBarcodeList.Add(_reader.GetSupplierProductBarcodes(barcodeDataSet.Path));
+            }
 
-            var catalogA = _reader.GetProductsFromCatalog(catalogAPath, "A");
-            var catalogB = _reader.GetProductsFromCatalog(catalogBPath, "B");
+            foreach (var item in _catalogs)
+            {
+                _productSets.Add(_reader.GetProductsFromCatalog(item.Path, item.Type));
+            }
 
-            var mergedProducts = _productCatalogMerger.MergeProductCatalogs(barcodesA, barcodesB, catalogA, catalogB);
+            var mergedProducts = _productCatalogMerger.MergeProductCatalogs(_productBarcodeList, _productSets);
 
             _writer.Write(mergedProducts);
         }

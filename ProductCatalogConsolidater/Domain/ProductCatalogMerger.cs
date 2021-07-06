@@ -6,8 +6,13 @@ namespace ProductCatalogConsolidater.Domain
 {
     public class ProductCatalogMerger : IProductCatalogMerger
     {
-        public IEnumerable<FinalProductCatalog> MergeProductCatalogs(IEnumerable<SupplierProductBarcode> barcodesA, IEnumerable<SupplierProductBarcode> barcodesB, IEnumerable<Product> productsFromCatalogA, IEnumerable<Product> productsFromCatalogB)
+        public IEnumerable<FinalProductCatalog> MergeProductCatalogs(IEnumerable<IEnumerable<SupplierProductBarcode>> productBarcodeSets, IEnumerable<IEnumerable<Product>> productCatalogSets)
         {
+            foreach (var item in productBarcodeSets)
+            {
+                item.
+            }
+
             var overlappingBarcodesSKU = (from barcodeA in barcodesA
                                           join barcodeB in barcodesB
                                           on barcodeA.Barcode equals barcodeB.Barcode
