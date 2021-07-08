@@ -6,48 +6,28 @@ namespace ProductCatalogConsolidater.Domain
 {
     public class ProductCatalogMerger : IProductCatalogMerger
     {
-        public IEnumerable<FinalProductCatalog> MergeProductCatalogs(IEnumerable<IEnumerable<SupplierProductBarcode>> productBarcodeSets, IEnumerable<IEnumerable<Product>> productCatalogSets)
+        public IEnumerable<FinalProductCatalog> MergeProductCatalogs(
+            IEnumerable<SupplierProductBarcode> productBarcodeSets,
+            IEnumerable<Product> productCatalogSets)
         {
-            foreach (var item in productBarcodeSets)
+            var groupedBarcode = productBarcodeSets.GroupBy(x => x.Barcode).Select( y => new { 
+                barcode = y.Key,
+                productBarcodes = y.ToList()
+            });
+
+            Dictionary<string, string> sKUSourceTypes = new Dictionary<string, string>(); 
+
+            foreach (var item in groupedBarcode)
             {
-                item.
+                var productBarcode = item.productBarcodes.OrderBy(x => x.SourceType).First();
+                if (!sKUSourceTypes.ContainsKey(productBarcode.SKU))
+                    sKUSourceTypes.Add(productBarcode.SKU, productBarcode.SourceType);
             }
 
-            var overlappingBarcodesSKU = (from barcodeA in barcodesA
-                                          join barcodeB in barcodesB
-                                          on barcodeA.Barcode equals barcodeB.Barcode
-                                          select new { SKUA = barcodeA.SKU, SKUB = barcodeB.SKU }).Distinct();
-
-            var overlappingProducts = from productA in productsFromCatalogA
-                                      join overlappingBarcodeSKU in overlappingBarcodesSKU
-                                      on productA.SKU equals overlappingBarcodeSKU.SKUA
-                                      select new FinalProductCatalog { SKU = overlappingBarcodeSKU.SKUA, Description = productA.Description, Source = "A" };
-
-            var nonOverlappingBarcodesSKUA = (from barcodeA in barcodesA
-                                              join overlappingBarcodeSKU in overlappingBarcodesSKU
-                                              on barcodeA.SKU equals overlappingBarcodeSKU.SKUA into nonOverlappingGroup
-                                              from nonOverlapping in nonOverlappingGroup.DefaultIfEmpty()
-                                              where nonOverlapping == null
-                                              select barcodeA.SKU).Distinct();
-
-            var nonOverlappingBarcodesSKUB = (from barcodeB in barcodesB
-                                              join overlappingBarcodeSKU in overlappingBarcodesSKU
-                                              on barcodeB.SKU equals overlappingBarcodeSKU.SKUB into nonOverlappingGroup
-                                              from nonOverlapping in nonOverlappingGroup.DefaultIfEmpty()
-                                              where nonOverlapping == null
-                                              select barcodeB.SKU).Distinct();
-
-            var nonOverlappingProductsA = from nonOverlappingBarcodeSKU in nonOverlappingBarcodesSKUA
-                                          join productA in productsFromCatalogA
-                                          on nonOverlappingBarcodeSKU equals productA.SKU
-                                          select new FinalProductCatalog { SKU = productA.SKU, Description = productA.Description, Source = "A" };
-
-            var nonOverlappingProductsB = from nonOverlappingBarcodeSKU in nonOverlappingBarcodesSKUB
-                                          join productB in productsFromCatalogB
-                                          on nonOverlappingBarcodeSKU equals productB.SKU
-                                          select new FinalProductCatalog { SKU = productB.SKU, Description = productB.Description, Source = "B" };
-
-            var mergedProducts = overlappingProducts.Union(nonOverlappingProductsA).Union(nonOverlappingProductsB);
+            var mergedProducts = from products in productCatalogSets
+                                 join sKUSourceType in sKUSourceTypes
+                                 on products.SKU equals sKUSourceType.Key
+                                 select new FinalProductCatalog { SKU = sKUSourceType.Key, Description = products.Description, Source = sKUSourceType.Value };
 
             return mergedProducts;
         }

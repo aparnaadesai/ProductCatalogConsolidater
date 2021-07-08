@@ -13,9 +13,9 @@ namespace ProductCatalogConsolidater
         private readonly IProductCatalogMerger _productCatalogMerger;
 
         private List<SupplierProductBarcodes> _productBarcodes = new List<SupplierProductBarcodes>();
-        private List<List<SupplierProductBarcode>> _productBarcodeList = new List<List<SupplierProductBarcode>>();
+        private List<SupplierProductBarcode> _productBarcodeList = new List<SupplierProductBarcode>();
         private List<Catalog> _catalogs = new List<Catalog>();
-        private List<List<Product>> _productSets = new List<List<Product>>();
+        private List<Product> _productSets = new List<Product>();
 
         public ProductCatlalogMergerService(IInputService reader,
             IOutputService writer,
@@ -32,17 +32,14 @@ namespace ProductCatalogConsolidater
 
         public void MergeProductCatalogs()
         {
-            var catalogAPath = _configurationRoot.GetSection("Input:catalogA").Value;
-            var catalogBPath = _configurationRoot.GetSection("Input:catalogB").Value;
-
             foreach (var barcodeDataSet in _productBarcodes)
             {
-                _productBarcodeList.Add(_reader.GetSupplierProductBarcodes(barcodeDataSet.Path));
+                _productBarcodeList.AddRange(_reader.GetSupplierProductBarcodes(barcodeDataSet.Path, barcodeDataSet.Type));
             }
 
             foreach (var item in _catalogs)
             {
-                _productSets.Add(_reader.GetProductsFromCatalog(item.Path, item.Type));
+                _productSets.AddRange(_reader.GetProductsFromCatalog(item.Path, item.Type));
             }
 
             var mergedProducts = _productCatalogMerger.MergeProductCatalogs(_productBarcodeList, _productSets);

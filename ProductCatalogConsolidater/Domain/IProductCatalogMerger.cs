@@ -5,7 +5,7 @@ namespace ProductCatalogConsolidater.Domain
 {
     public interface IProductCatalogMerger
     {
-        IEnumerable<FinalProductCatalog> MergeProductCatalogs(IEnumerable<IEnumerable<SupplierProductBarcode>> productBarcodeSets,
-             IEnumerable<IEnumerable<Product>> productCatalogSets);
+        IEnumerable<FinalProductCatalog> MergeProductCatalogs(IEnumerable<SupplierProductBarcode> productBarcodeSets,
+             IEnumerable<Product> productCatalogSets);
     }
 }

@@ -7,6 +7,6 @@ namespace ProductCatalogConsolidater
     {
         List<Product> GetProductsFromCatalog(string fileName, string catalogType);
         List<Supplier> GetSuppliers(string fileName);
-        List<SupplierProductBarcode> GetSupplierProductBarcodes(string fileName);
+        List<SupplierProductBarcode> GetSupplierProductBarcodes(string fileName, string sourceType);
     }
 }

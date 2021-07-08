@@ -39,7 +39,7 @@ namespace ProductCatalogConsolidater
             return products;
         }
 
-        public List<SupplierProductBarcode> GetSupplierProductBarcodes(string fileName)
+        public List<SupplierProductBarcode> GetSupplierProductBarcodes(string fileName, string sourceType)
         {
             List<SupplierProductBarcode> supplierProductBarcodes =
                 new List<SupplierProductBarcode>();
@@ -51,6 +51,7 @@ namespace ProductCatalogConsolidater
             foreach (var item in results)
             {
                 SupplierProductBarcode productBarcode = new SupplierProductBarcode();
+                productBarcode.SourceType = sourceType;
                 for (int i = 0; i < columnCount; i++)
                 {
                     if (i == 0)
