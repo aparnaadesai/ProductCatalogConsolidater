@@ -1,10 +1,10 @@
 # ProductCatalogConsolidater
 A console application to merge different Product Catalogs into one
 
-##Problem Statement
+## Problem Statement
 https://github.com/tosumitagrawal/codingskills
 
-##Assumptions
+## Assumptions
 Assumed that when two products have the same barcode the source of the product would be the based on the first source name in ascending order, e.g. for two same products in catalog with source A and B, the output CSV would have one single product with source as A 
 
 ## Pre-requisites
