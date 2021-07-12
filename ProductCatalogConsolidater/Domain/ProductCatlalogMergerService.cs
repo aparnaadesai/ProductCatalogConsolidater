@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using ProductCatalogConsolidater.Domain;
+﻿using ProductCatalogConsolidater.Domain;
+using ProductCatalogConsolidater.Entities;
+using System.Collections.Generic;
 
 namespace ProductCatalogConsolidater
 {
@@ -7,37 +8,51 @@ namespace ProductCatalogConsolidater
     {
         private readonly IInputService _reader;
         private readonly IOutputService _writer;
-        private readonly IConfigurationRoot _configurationRoot;
         private readonly IProductCatalogMerger _productCatalogMerger;
+        private readonly IProductCatalogConfiguration _productCatalogConfiguration;
 
         public ProductCatlalogMergerService(IInputService reader,
             IOutputService writer,
-            IConfigurationRoot configurationRoot,
-            IProductCatalogMerger productCatalogMerger)
+            IProductCatalogMerger productCatalogMerger,
+            IProductCatalogConfiguration productCatalogConfiguration)
         {
             _reader = reader;
             _writer = writer;
-            _configurationRoot = configurationRoot;
             _productCatalogMerger = productCatalogMerger;
+            _productCatalogConfiguration = productCatalogConfiguration;
         }
 
         public void MergeProductCatalogs()
         {
+            List<SupplierProductBarcode> productBarcodes = GetSupplierProductBarcodes();
 
-            var barcodeAPath = _configurationRoot.GetSection("Input:barcodesA").Value;
-            var barcodeBPath = _configurationRoot.GetSection("Input:barcodesB").Value;
-            var catalogAPath = _configurationRoot.GetSection("Input:catalogA").Value;
-            var catalogBPath = _configurationRoot.GetSection("Input:catalogB").Value;
+            List<Product> products = GetProducts();
 
-            var barcodesA = _reader.GetSupplierProductBarcodes(barcodeAPath);
-            var barcodesB = _reader.GetSupplierProductBarcodes(barcodeBPath);
-
-            var catalogA = _reader.GetProductsFromCatalog(catalogAPath, "A");
-            var catalogB = _reader.GetProductsFromCatalog(catalogBPath, "B");
-
-            var mergedProducts = _productCatalogMerger.MergeProductCatalogs(barcodesA, barcodesB, catalogA, catalogB);
+            var mergedProducts = _productCatalogMerger.MergeProductCatalogs(productBarcodes, products);
 
             _writer.Write(mergedProducts);
+        }
+
+        private List<Product> GetProducts()
+        {
+            List<Product> products = new List<Product>();
+            foreach (var productsDataset in _productCatalogConfiguration.Catalogs)
+            {
+                products.AddRange(_reader.GetProductsFromCatalog(productsDataset));
+            }
+
+            return products;
+        }
+
+        private List<SupplierProductBarcode> GetSupplierProductBarcodes()
+        {
+            List<SupplierProductBarcode> productBarcodes = new List<SupplierProductBarcode>();
+            foreach (var barcodeDataSet in _productCatalogConfiguration.ProductBarcodes)
+            {
+                productBarcodes.AddRange(_reader.GetSupplierProductBarcodes(barcodeDataSet));
+            }
+
+            return productBarcodes;
         }
     }
 }

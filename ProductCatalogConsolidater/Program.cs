@@ -31,6 +31,7 @@ namespace ProductCatalogConsolidater
             services.AddScoped<IOutputService, CSVOutputService>();
             services.AddScoped<IProductCatalogMergerService, ProductCatlalogMergerService>();
             services.AddScoped<IProductCatalogMerger, ProductCatalogMerger>();
+            services.AddScoped<IProductCatalogConfiguration, ProductCatalogConfiguration>();
 
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
