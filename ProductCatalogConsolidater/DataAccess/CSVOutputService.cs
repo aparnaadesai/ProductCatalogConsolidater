@@ -15,25 +15,29 @@ namespace ProductCatalogConsolidater
 
         public void Write(IEnumerable<FinalProductCatalog> mergedCatalog)
         {
+            string filePath = GetFilePath();
+
+            var csvContent = new List<string>() { "SKU, Description, Source" };
+
+            foreach (var product in mergedCatalog)
+            {
+                csvContent.Add(product.ToString());
+            }
+            
+            File.WriteAllLines(filePath, csvContent);
+        }
+
+        private string GetFilePath()
+        {
             var directoryPath = _configurationRoot.GetSection("Output:outputDirectory").Value;
-            var filePath = $"{directoryPath}/{_configurationRoot.GetSection("Output:outputFile").Value}";
 
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath);
             }
 
-            var csvContent = new List<string>() {"SKU, Description, Source"};
-
-            foreach (var product in mergedCatalog)
-            {
-                csvContent.Add(product.ToString());
-            }
-
-            if (!File.Exists( filePath))
-            {
-                File.WriteAllLines(filePath, csvContent);
-            }
+            var filePath = $"{directoryPath}/{_configurationRoot.GetSection("Output:outputFile").Value}";
+            return filePath;
         }
     }
 }

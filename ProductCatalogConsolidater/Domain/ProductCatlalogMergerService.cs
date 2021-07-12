@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using ProductCatalogConsolidater.Domain;
+﻿using ProductCatalogConsolidater.Domain;
 using ProductCatalogConsolidater.Entities;
 using System.Collections.Generic;
 
@@ -9,42 +8,51 @@ namespace ProductCatalogConsolidater
     {
         private readonly IInputService _reader;
         private readonly IOutputService _writer;
-        private readonly IConfigurationRoot _configurationRoot;
         private readonly IProductCatalogMerger _productCatalogMerger;
-
-        private List<SupplierProductBarcodes> _productBarcodes = new List<SupplierProductBarcodes>();
-        private List<SupplierProductBarcode> _productBarcodeList = new List<SupplierProductBarcode>();
-        private List<Catalog> _catalogs = new List<Catalog>();
-        private List<Product> _productSets = new List<Product>();
+        private readonly IProductCatalogConfiguration _productCatalogConfiguration;
 
         public ProductCatlalogMergerService(IInputService reader,
             IOutputService writer,
-            IConfigurationRoot configurationRoot,
-            IProductCatalogMerger productCatalogMerger)
+            IProductCatalogMerger productCatalogMerger,
+            IProductCatalogConfiguration productCatalogConfiguration)
         {
             _reader = reader;
             _writer = writer;
-            _configurationRoot = configurationRoot;
             _productCatalogMerger = productCatalogMerger;
-            _configurationRoot.GetSection("supplierProductBarcodes").Bind(_productBarcodes);
-            _configurationRoot.GetSection("productCatalogs").Bind(_catalogs);
+            _productCatalogConfiguration = productCatalogConfiguration;
         }
 
         public void MergeProductCatalogs()
         {
-            foreach (var barcodeDataSet in _productBarcodes)
-            {
-                _productBarcodeList.AddRange(_reader.GetSupplierProductBarcodes(barcodeDataSet.Path, barcodeDataSet.Type));
-            }
+            List<SupplierProductBarcode> productBarcodes = GetSupplierProductBarcodes();
 
-            foreach (var item in _catalogs)
-            {
-                _productSets.AddRange(_reader.GetProductsFromCatalog(item.Path, item.Type));
-            }
+            List<Product> products = GetProducts();
 
-            var mergedProducts = _productCatalogMerger.MergeProductCatalogs(_productBarcodeList, _productSets);
+            var mergedProducts = _productCatalogMerger.MergeProductCatalogs(productBarcodes, products);
 
             _writer.Write(mergedProducts);
+        }
+
+        private List<Product> GetProducts()
+        {
+            List<Product> products = new List<Product>();
+            foreach (var productsDataset in _productCatalogConfiguration.Catalogs)
+            {
+                products.AddRange(_reader.GetProductsFromCatalog(productsDataset));
+            }
+
+            return products;
+        }
+
+        private List<SupplierProductBarcode> GetSupplierProductBarcodes()
+        {
+            List<SupplierProductBarcode> productBarcodes = new List<SupplierProductBarcode>();
+            foreach (var barcodeDataSet in _productCatalogConfiguration.ProductBarcodes)
+            {
+                productBarcodes.AddRange(_reader.GetSupplierProductBarcodes(barcodeDataSet));
+            }
+
+            return productBarcodes;
         }
     }
 }
